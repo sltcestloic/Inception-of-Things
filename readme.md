@@ -4,7 +4,7 @@
 
 - [Télécharger debian](https://www.debian.org/releases/stable/debian-installer/) (netinst CD image, AMD64)
 - Sur VirtualBox, créer une nouvelle VM et cocher Skip Unattended Installation
-- Ne pas oublier de cocher l'installation du serveur SSH pendant l'installation
+- Faire une installation graphique de Debian, ne pas oublier de cocher l'installation du serveur SSH pendant l'installation
 
 ## Configuration SSH
 
@@ -34,3 +34,5 @@ wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/sh
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install vagrant
 ```
+
+Génerer une clef ssh :  `ssh-keygen -t rsa -b 4096`
