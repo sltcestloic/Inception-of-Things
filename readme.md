@@ -11,14 +11,12 @@
 ### Port forwarding
 
 - `ip a | grep enp0s3` -> copier l'addresse inet
-- Éteindre la VM
 - Dans VirtualBox, aller dans network, vérifier que Attached to est bien en NAT
 - Aller dans port forwarding, ajouter une règle: 
 
     |  Host IP | Host Port  | Guest IP  | Guest Port  |
     |---|---|---|---|
     |  127.0.0.1 | 4242  | (coller l'ip)  | 22  |
-- Relancer la VM
 
 ### Pour pouvoir se connecter directement en root sur la VM
 
