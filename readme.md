@@ -63,6 +63,23 @@ sudo apt update && sudo apt install vagrant
 ssh-keygen -t rsa -b 4096
 ````
 
+### Installer [VirtualBox](https://linuxiac.com/how-to-install-virtualbox-on-debian-12-bookworm/)
+
+```
+wget -O- -q https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmour -o /usr/share/keyrings/oracle_vbox_2016.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle_vbox_2016.gpg] http://download.virtualbox.org/virtualbox/debian bookworm contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+sudo apt update
+sudo apt install virtualbox-7.1
+```
+
+### Activer la Nested Virtualization
+Pour faire fonctionner Vagrant dans la VM, il va falloir activer la nested virtualization dans les paramètres de VirtualBox
+
+Aller dans **System -> Processor** et cocher **Enable Nested VT-x/AMD-V**
+
+Relancer la VM
+
+
 # Installation de [kubectl](https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/) (WiP)
 
 ```sh
