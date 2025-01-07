@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
     config.vm.define "lbertranS" do |server|
       server.vm.hostname = "lbertranS"
-      server.vm.box = "ubuntu/bionic64"
+      server.vm.box = "ubuntu/trusty64"
       server.vm.network "private_network", ip: "192.168.56.110"
       server.vm.provider "virtualbox" do |vb|
         vb.name = "lbertranS"
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
   
     config.vm.define "lbertranSW" do |worker|
       worker.vm.hostname = "lbertranSW"
-      worker.vm.box = "ubuntu/bionic64"
+      worker.vm.box = "ubuntu/trusty64"
       worker.vm.network "private_network", ip: "192.168.56.111"
       worker.vm.provider "virtualbox" do |vb|
         vb.name = "lbertranSW"
