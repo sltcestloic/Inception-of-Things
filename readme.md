@@ -80,7 +80,7 @@ Aller dans **System -> Processor** et cocher **Enable Nested VT-x/AMD-V**
 Relancer la VM
 
 
-# Installation de [kubectl](https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/) (WiP)
+# Installation de [kubectl](https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/)
 
 ```sh
 apt-get install curl
