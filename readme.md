@@ -29,7 +29,7 @@
 
 # Ajout d'un shared-folder entre la VM et son poste
 
-Configurer le dossier partagé dans les settings de la VM et le mettre en `auto-mount` et `permanent`.
+Configurer le dossier partagé dans les settings de la VM et le mettre en `auto-mount` et `permanent` (ça marche vraiment en réalité donc on va le faire à la main)
 
 Noter le nom du shared-folder.
 
@@ -46,7 +46,7 @@ mount -t vboxsf [shared-folder name] [path to mount location]
 
 Si la mount location n'existe pas, la créer avec mkdir au préalable.
 
-Éditer le fichier `/etc/fstab` pour que le dossier partagé soit toujours monté en ajoutant :
+Éditer le fichier `/etc/fstab` pour rendre le mount permanent en ajoutant :
 ```sh
 [shared-folder name]	[path to mount location]	vboxsf	defaults	0	0
 ```
@@ -63,12 +63,11 @@ sudo apt update && sudo apt install vagrant
 ssh-keygen -t rsa -b 4096
 ````
 
-# Installation de `kubectl` (WiP)
+# Installation de [kubectl](https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/) (WiP)
 
 ```sh
-sudo apt-get update && sudo apt-get install -y apt-transport-https
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-sudo apt-get update
-sudo apt-get install -y kubectl
+apt-get install curl
+curl -LO https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
 ```
