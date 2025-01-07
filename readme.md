@@ -27,13 +27,13 @@
 - Ajouter `PermitRootLogin yes`
 - `systemctl restart ssh`
 
-### Pour ajouter un shared-folder
+# Ajout d'un shared-folder entre la VM et son poste
 
 Configurer le dossier partagé dans les settings de la VM et le mettre en `auto-mount` et `permanent`.
 
 Noter le nom du shared-folder.
 
-Installer les Guest User Additions sur la machine invité :
+Installer les packages requis par VBox Guest User Additions sur la machine invité :
 
 ```sh
 apt install make gcc dkms linux-source linux-headers-$(uname -r)
@@ -44,9 +44,11 @@ Lancer la commande suivante pour monter le dossier partagé :
 mount -t vboxsf [shared-folder name] [path to mount location]
 ```
 
+Si la mount location n'existe pas, la créer avec mkdir au préalable.
+
 Éditer le fichier `/etc/fstab` pour que le dossier partagé soit toujours monté en ajoutant :
 ```sh
-iot	/home/ctaleb/iot	vboxsf	defaults	0	0
+[shared-folder name]	[path to mount location]	vboxsf	defaults	0	0
 ```
 
 # Installation de Vagrant
