@@ -22,7 +22,7 @@
 
 ### Pour pouvoir se connecter directement en root sur la VM
 
-- Installer vim (`apt-get install vim`)
+- Installer vim (`apt-get install vim -y`)
 - `vim /etc/ssh/sshd_config`
 - Ajouter `PermitRootLogin yes`
 - `systemctl restart ssh`
@@ -36,7 +36,7 @@ Noter le nom du shared-folder.
 Installer les packages requis par VBox Guest User Additions sur la machine invité :
 
 ```sh
-apt install make gcc dkms linux-source linux-headers-$(uname -r)
+apt install make gcc dkms linux-source linux-headers-$(uname -r) -y
 ```
 
 Lancer la commande suivante pour monter le dossier partagé :
@@ -56,7 +56,7 @@ Si la mount location n'existe pas, la créer avec mkdir au préalable.
 ```sh
 wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-sudo apt update && sudo apt install vagrant
+sudo apt update && sudo apt install vagrant -y
 ```
 ### Génerer une clef ssh qui sera utile pour se connecter sur les VM sans mot de passe
 ```sh
@@ -69,7 +69,7 @@ ssh-keygen -t rsa -b 4096
 wget -O- -q https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmour -o /usr/share/keyrings/oracle_vbox_2016.gpg
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle_vbox_2016.gpg] http://download.virtualbox.org/virtualbox/debian bookworm contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 sudo apt update
-sudo apt install virtualbox-7.1
+sudo apt install virtualbox-7.1 -y
 ```
 
 ### Activer la Nested Virtualization
@@ -83,7 +83,7 @@ Relancer la VM
 # Installation de [kubectl](https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/)
 
 ```sh
-apt-get install curl
+apt-get install curl -y
 curl -LO https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
