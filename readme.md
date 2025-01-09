@@ -31,12 +31,6 @@ Configurer le dossier partagé dans les settings de la VM et le mettre en `auto-
 
 Noter le nom du shared-folder.
 
-Installer les packages requis par VBox Guest User Additions sur la machine invité :
-
-```sh
-apt install make gcc dkms linux-source linux-headers-$(uname -r) -y
-```
-
 Lancer la commande suivante pour monter le dossier partagé :
 ```sh
 mount -t vboxsf [shared-folder name] [path to mount location]
