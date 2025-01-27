@@ -15,7 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         '--memory', '512',
         '--cpus', '1'
       ]
-      # vb.gui = false
+      vb.gui = false
     end
     # server.vm.provision "shell", path: "controller.sh"
   end
@@ -31,7 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         '--memory', '512',
         '--cpus', '1'
       ]
-      # vb.gui = false
+      vb.gui = false
     end
     # server.vm.provision "shell", path: "agent.sh", args: ["192.168.58.110"]
   end
