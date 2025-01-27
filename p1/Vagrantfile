@@ -5,13 +5,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "ctalebS" do |server|
     server.vm.hostname = "ctalebS"
-    server.vm.network "private_network", ip: "192.168.58.110"
+    server.vm.network "private_network", ip: "192.168.58.110", netmask: "255.255.255.0"
     server.vm.provider "virtualbox" do |vb|
-      # symlink ?
-      # vb.customize [
-      #   "setextradata", :id,
-      #   "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"
-      # ]
       vb.customize [
         'modifyvm', :id,
         '--name', 'ctalebS',
@@ -24,13 +19,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "ctalebSW" do |worker|
     worker.vm.hostname = "ctalebSW"
-    worker.vm.network "private_network", ip: "192.168.58.111"
+    worker.vm.network "private_network", ip: "192.168.58.111", netmask: "255.255.255.0"
     worker.vm.provider "virtualbox" do |vb|
-      # symlink ?
-      # vb.customize [
-      #   "setextradata", :id,
-      #   "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"
-      # ]
       vb.customize [
         'modifyvm', :id,
         '--name', 'ctalebSW',
