@@ -17,7 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ]
       vb.gui = false
     end
-    server.vm.provision "shell", path: "controller.sh"
+    server.vm.provision "shell", path: "shared/controller.sh"
   end
 
   config.vm.define "ctalebSW" do |worker|
@@ -33,6 +33,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ]
       vb.gui = false
     end
-    worker.vm.provision "shell", path: "agent.sh", args: ["192.168.58.110"]
+    worker.vm.provision "shell", path: "shared/agent.sh", args: ["192.168.58.110"]
   end
 end
