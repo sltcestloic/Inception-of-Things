@@ -1,2 +1,6 @@
 .vagrant
 ubuntu-bionic*
+
+#config
+token
+k3s.yaml
