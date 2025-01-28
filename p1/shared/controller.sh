@@ -5,9 +5,9 @@ SHARED_FOLDER=$1
 MASTER_IP=$2
 
 # Ready the environment for K3s
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install curl
+sudo apt update
+# sudo apt upgrade -y
+sudo apt install curl
 
 # Install K3s
 export K3S_KUBECONFIG_MODE="644" k3s server
