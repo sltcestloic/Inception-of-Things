@@ -26,7 +26,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     worker.vm.network "private_network", ip: worker_ip
     worker.vm.provider "virtualbox" do |vb|
       vb.name = "ctalebSW"
-      vb.memory = 512
+      vb.memory = 1024
       vb.cpus = 1
     end
     worker.vm.provision "shell", path: "shared/agent.sh", args: [shared_folder, server_ip]
