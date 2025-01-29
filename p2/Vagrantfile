@@ -1,0 +1,22 @@
+VAGRANTFILE_API_VERSION = "2"
+
+shared_folder = "/vagrant"
+server_ip = "192.168.58.110"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "debian/bookworm64"
+
+  config.vm.synced_folder "./shared", shared_folder
+
+  config.vm.define "ctalebS", primary: true do |server|
+    server.vm.hostname = "ctalebS"
+    server.vm.network "private_network", ip: server_ip
+    server.vm.provider "virtualbox" do |vb|
+      vb.name = "ctalebS"
+      # recommended K3s server specs
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+    server.vm.provision "shell", path: "shared/controller.sh", args: [server_ip]
+  end
+end
