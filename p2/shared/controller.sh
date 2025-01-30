@@ -18,5 +18,5 @@ kubectl apply -f /vagrant/app2/
 kubectl apply -f /vagrant/app3/
 kubectl apply -f /vagrant/ingress.yaml
 
-# Wait for all deployments to be available
+echo "Waiting for the deployments to be available..."
 kubectl wait --for=condition=available deployment --all --timeout=300s
