@@ -71,6 +71,11 @@ Aller dans **System -> Processor** et cocher **Enable Nested VT-x/AMD-V**
 
 Relancer la VM
 
+# Ajout des hosts pour la p2
+
+```sh
+echo 192.168.58.110 app1.com app2.com app3.com >> /etc/hosts
+```
 
 # Installation de [kubectl](https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/)
 
