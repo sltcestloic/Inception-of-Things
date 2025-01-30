@@ -100,7 +100,7 @@ apt-get update
 apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-# Installation de k3d
+# Installation de [k3d](https://k3d.io/stable/#install-script)
 
 ```sh
 wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
