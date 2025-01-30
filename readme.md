@@ -105,3 +105,11 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 ```sh
 wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 ```
+
+# Installation de [ArgoCD cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/)
+
+```sh
+curl -sSL -o argocd-linux-$(dpkg --print-architecture) https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-$(dpkg --print-architecture)
+sudo install -m 555 argocd-linux-$(dpkg --print-architecture) /usr/local/bin/argocd
+rm argocd-linux-$(dpkg --print-architecture)
+```
