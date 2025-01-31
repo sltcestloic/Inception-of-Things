@@ -50,10 +50,7 @@ wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/sh
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install vagrant -y
 ```
-### Génerer une clef ssh qui sera utile pour se connecter sur les VM sans mot de passe
-```sh
-ssh-keygen -t rsa -b 4096
-````
+
 
 ### Installer [VirtualBox](https://linuxiac.com/how-to-install-virtualbox-on-debian-12-bookworm/)
 
