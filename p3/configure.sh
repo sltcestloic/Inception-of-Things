@@ -12,6 +12,8 @@ kubectl create namespace dev
 # core install is missing permanent server for dashboard
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
+# port-forwarding but not when pending status (above is perma and works well)
+# kubectl port-forward svc/argocd-server -n argocd 8080:443 
 # kubectl get svc -n argocd
 
 # Login to argocd
@@ -19,6 +21,9 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
 IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' k3d-argocluster-server-0)
 PORT=$(kubectl get svc argocd-server -n argocd -o jsonpath="{.spec.ports[?(@.port==443)].nodePort}")
 argocd login $IP:$PORT --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
+
+# apply app configuration
+kubectl apply -f argocd/application.yaml -n argocd
 
 
 ###
