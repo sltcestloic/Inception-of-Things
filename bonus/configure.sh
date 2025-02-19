@@ -27,22 +27,3 @@ echo "Initial password $(kubectl get secret -n argocd argocd-initial-admin-secre
 
 # Apply app configuration
 kubectl apply -f argocd/application.yaml -n argocd
-
-###
-# Test stuff
-###
-# Change namespace; default to go back to normal
-# kubectl config set-context --current --namespace=argocd
-
-# Create app
-# argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace dev
-# Sync app
-# argocd app sync guestbook
-
-# Get initial password
-# argocd admin initial-password -n argocd
-# Change password
-# argocd account update-password
-#*** Enter password of currently logged in user (admin): 
-#*** Enter new password for user admin: 
-#*** Confirm new password for user admin:
