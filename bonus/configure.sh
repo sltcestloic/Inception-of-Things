@@ -7,6 +7,7 @@ kubectl config use-context k3d-argocluster # optional: we only have one cluster
 # Create required namespaces
 kubectl create namespace argocd
 kubectl create namespace dev
+kubectl create namespace gitlab
 
 # Configure argocd
 # core install is missing permanent server for dashboard
