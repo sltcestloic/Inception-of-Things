@@ -4,3 +4,5 @@ ubuntu-bionic*
 #config
 token
 k3s.yaml
+linux-amd64
+helm.tar.gz

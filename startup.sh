@@ -46,3 +46,4 @@ echo 192.168.58.110 app1.com app2.com app3.com >> /etc/hosts
 curl https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz -o helm.tar.gz
 tar -xf helm.tar.gz 
 mv linux-amd64/helm /usr/local/bin/
+rm -rvf helm.tar.gz linux-amd64
