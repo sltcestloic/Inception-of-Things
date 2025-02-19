@@ -22,6 +22,8 @@ SERVER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{
 SERVER_PORT=$(kubectl get svc argocd-server -n argocd -o jsonpath="{.spec.ports[?(@.port==443)].nodePort}")
 echo "Admin dashboard $SERVER_IP:$SERVER_PORT"
 echo "Playground-app $SERVER_IP:30888"
+echo "Waiting for argocd-server to be deployed..."
+kubectl wait --for=condition=available --timeout=300s deployment -n argocd argocd-server
 echo "Initial password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
 # argocd login $SERVER_IP:$SERVER_PORT --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
 
