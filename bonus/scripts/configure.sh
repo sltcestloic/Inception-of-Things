@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Install Helm
+if ! which helm > /dev/null 2>&1; then
+    echo "Installing Helm"
+    curl https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz -o helm.tar.gz
+    tar -xf helm.tar.gz 
+    mv linux-amd64/helm /usr/local/bin/
+    rm -rvf helm.tar.gz linux-amd64
+else
+    echo "Helm already installed"
+fi
+
 # Create a k3d cluster for argocd and set it as context
 k3d cluster create argocluster #--port 8080:80@loadbalancer #--agents 2
 kubectl config use-context k3d-argocluster # optional: we only have one cluster
@@ -7,6 +18,7 @@ kubectl config use-context k3d-argocluster # optional: we only have one cluster
 # Create required namespaces
 kubectl create namespace argocd
 kubectl create namespace dev
+kubectl create namespace gitlab
 
 # Configure argocd
 # core install is missing permanent server for dashboard
@@ -29,22 +41,3 @@ echo "Initial password $(kubectl get secret -n argocd argocd-initial-admin-secre
 
 # Apply app configuration
 kubectl apply -f argocd/application.yaml -n argocd
-
-###
-# Test stuff
-###
-# Change namespace; default to go back to normal
-# kubectl config set-context --current --namespace=argocd
-
-# Create app
-# argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace dev
-# Sync app
-# argocd app sync guestbook
-
-# Get initial password
-# argocd admin initial-password -n argocd
-# Change password
-# argocd account update-password
-#*** Enter password of currently logged in user (admin): 
-#*** Enter new password for user admin: 
-#*** Confirm new password for user admin:

@@ -6,7 +6,7 @@ server_ip = "192.168.58.110"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "debian/bookworm64"
 
-  config.vm.synced_folder "./shared", shared_folder
+  config.vm.synced_folder "./confs", shared_folder
 
   config.vm.define "ctalebS", primary: true do |server|
     server.vm.hostname = "ctalebS"
@@ -17,6 +17,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.memory = 2048
       vb.cpus = 2
     end
-    server.vm.provision "shell", path: "shared/controller.sh", args: [server_ip]
+    server.vm.provision "shell", path: "scripts/controller.sh", args: [server_ip]
   end
 end
