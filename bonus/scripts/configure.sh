@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ARGO_ADMIN_PASSWORD="replace_me"
+
 # Create cluster
 k3d cluster create argolab 
 
@@ -42,8 +44,7 @@ kubectl patch svc argocd-server -n argocd -p '{
 SERVER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' k3d-argolab-server-0)
 INITIAL_ARGOCD_PASSWORD=$(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 argocd login $SERVER_IP:31888 --username admin --password $INITIAL_ARGOCD_PASSWORD --insecure
-echo "Admin dashboard $SERVER_IP:31888"
-argocd account update-password --current-password $INITIAL_ARGOCD_PASSWORD --new-password 123456789
+argocd account update-password --current-password $INITIAL_ARGOCD_PASSWORD --new-password $ARGO_ADMIN_PASSWORD
 
 # Expose gitlab
 kubectl port-forward --namespace gitlab svc/gitlab-webservice-default 8080:8181 > /dev/null 2>&1 &
@@ -75,3 +76,8 @@ cd ../../scripts
 # Start app
 kubectl create namespace dev
 kubectl apply -f ../confs/argocd/application.yaml -n argocd
+
+# Access
+echo "ArgoCD Admin Dashboard $SERVER_IP:31888"
+echo "GitLab localhost:8080"
+echo "App $SERVER_IP:30888"
