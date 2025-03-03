@@ -5,7 +5,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: http://localhost:8080/root/playground.git
+    repoURL: http://gitlab-webservice-default.gitlab.svc.cluster.local:8181/root/playground.git # repoURL: http://localhost:8080/root/playground.git
     targetRevision: HEAD
     path: dev  # Path in the repo where kube manifests are stored
   destination:

@@ -14,13 +14,8 @@ helm upgrade --install gitlab gitlab/gitlab \
     --set global.hosts.externalIP="127.0.0.1" \
     --set global.hosts.https=false
 kubectl wait --for=condition=available --timeout=500s deployment -n gitlab --all
-# echo 127.0.0.1 gitlab.localhost minio.localhost registry.localhost >> /etc/hosts
 INITIAL_GITLAB_PASSWORD=$(kubectl get secret -n gitlab gitlab-gitlab-initial-root-password -o jsonpath="{.data.password}" | base64 -d)
 echo "$INITIAL_GITLAB_PASSWORD" > ~/tmp
-
-# kubectl patch svc gitlab-webservice-default -n gitlab -p '{"spec": {"type": "NodePort"}}'
-# SERVER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' k3d-argolab-server-0)
-# SERVER_PORT=$(kubectl get svc gitlab-webservice-default -n gitlab -o jsonpath="{.spec.ports[?(@.port==443)].nodePort}")
 
 
 # Install and configure argocd
@@ -31,7 +26,6 @@ helm install argocd argo/argo-cd \
     --timeout 300s \
     --namespace argocd
 kubectl wait --for=condition=available --timeout=300s deployment -n argocd argocd-server
-# kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
 kubectl patch svc argocd-server -n argocd -p '{
   "spec": {
     "type": "NodePort",
@@ -54,19 +48,22 @@ argocd account update-password --current-password $INITIAL_ARGOCD_PASSWORD --new
 # Expose gitlab
 kubectl port-forward --namespace gitlab svc/gitlab-webservice-default 8080:8181 > /dev/null 2>&1 &
 
-# Wait for token
-echo
-echo "Connect to gitlab with the password located in ~/tmp for root user."
-echo "Create a token and put it in ~/token."
-echo
-echo "Press Enter to continue..."
-read dummy
+# Create api access token
+GITLAB_TOKEN=$(kubectl -n gitlab exec -it $(kubectl -n gitlab get pods -l app=toolbox -o jsonpath='{.items[0].metadata.name}') -- \
+    gitlab-rails runner '
+    token = PersonalAccessToken.create!(
+      user: User.find_by(username: "root"),
+      name: "admin-token",
+      scopes: ["api", "read_repository"],
+      expires_at: 1.year.from_now
+    )
+    puts token.token
+    ' 2>/dev/null | tail -n1 | tr -d '\r')
 
 # Create repo
-GITLAB_TOKEN=$(cat ~/token)
 curl --request POST "http://localhost:8080/api/v4/projects" \
      --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-     --data "name=playground"
+     --data "name=playground&visibility=public"
 cd ../confs/playground
 git init
 git remote add origin http://root:$INITIAL_GITLAB_PASSWORD@localhost:8080/root/playground.git
