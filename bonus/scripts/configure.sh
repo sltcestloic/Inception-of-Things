@@ -1,43 +1,77 @@
 #!/bin/bash
 
-# Install Helm
-if ! which helm > /dev/null 2>&1; then
-    echo "Installing Helm"
-    curl https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz -o helm.tar.gz
-    tar -xf helm.tar.gz 
-    mv linux-amd64/helm /usr/local/bin/
-    rm -rvf helm.tar.gz linux-amd64
-else
-    echo "Helm already installed"
-fi
+# Create cluster
+k3d cluster create argolab 
 
-# Create a k3d cluster for argocd and set it as context
-k3d cluster create argocluster #--port 8080:80@loadbalancer #--agents 2
-kubectl config use-context k3d-argocluster # optional: we only have one cluster
-
-# Create required namespaces
-kubectl create namespace argocd
-kubectl create namespace dev
+# Install and configure gitlab
 kubectl create namespace gitlab
+helm repo add gitlab https://charts.gitlab.io/
+helm repo update
+helm upgrade --install gitlab gitlab/gitlab \
+    --timeout 600s \
+    --namespace gitlab \
+    --set certmanager-issuer.email=lbertran@student.42lyon.fr \
+    --set global.hosts.externalIP="127.0.0.1" \
+    --set global.hosts.https=false
+kubectl wait --for=condition=available --timeout=500s deployment -n gitlab --all
+INITIAL_GITLAB_PASSWORD=$(kubectl get secret -n gitlab gitlab-gitlab-initial-root-password -o jsonpath="{.data.password}" | base64 -d)
+echo "$INITIAL_GITLAB_PASSWORD" > ~/tmp
 
-# Configure argocd
-# core install is missing permanent server for dashboard
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
 
-# port-forwarding but not when pending status (above is perma and works well)
-# kubectl port-forward svc/argocd-server -n argocd 8080:443 
-# kubectl get svc -n argocd
-
-# Login to argocd
-SERVER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' k3d-argocluster-server-0)
-SERVER_PORT=$(kubectl get svc argocd-server -n argocd -o jsonpath="{.spec.ports[?(@.port==443)].nodePort}")
-echo "Admin dashboard $SERVER_IP:$SERVER_PORT"
-echo "Playground-app $SERVER_IP:30888"
-echo "Waiting for argocd-server to be deployed..."
+# Install and configure argocd
+kubectl create namespace argocd
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm install argocd argo/argo-cd \
+    --timeout 300s \
+    --namespace argocd
 kubectl wait --for=condition=available --timeout=300s deployment -n argocd argocd-server
-echo "Initial password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
-# argocd login $SERVER_IP:$SERVER_PORT --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
+kubectl patch svc argocd-server -n argocd -p '{
+  "spec": {
+    "type": "NodePort",
+    "ports": [
+      {
+        "port": 443,
+        "targetPort": 8080,
+        "nodePort": 31888
+      }
+    ]
+  }
+}'
 
-# Apply app configuration
-kubectl apply -f argocd/application.yaml -n argocd
+SERVER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' k3d-argolab-server-0)
+INITIAL_ARGOCD_PASSWORD=$(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+argocd login $SERVER_IP:31888 --username admin --password $INITIAL_ARGOCD_PASSWORD --insecure
+echo "Admin dashboard $SERVER_IP:31888"
+argocd account update-password --current-password $INITIAL_ARGOCD_PASSWORD --new-password 123456789
+
+# Expose gitlab
+kubectl port-forward --namespace gitlab svc/gitlab-webservice-default 8080:8181 > /dev/null 2>&1 &
+
+# Create api access token
+GITLAB_TOKEN=$(kubectl -n gitlab exec -it $(kubectl -n gitlab get pods -l app=toolbox -o jsonpath='{.items[0].metadata.name}') -- \
+    gitlab-rails runner '
+    token = PersonalAccessToken.create!(
+      user: User.find_by(username: "root"),
+      name: "admin-token",
+      scopes: ["api", "read_repository"],
+      expires_at: 1.year.from_now
+    )
+    puts token.token
+    ' 2>/dev/null | tail -n1 | tr -d '\r')
+
+# Create repo
+curl --request POST "http://localhost:8080/api/v4/projects" \
+     --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+     --data "name=playground&visibility=public"
+cd ../confs/playground
+git init
+git remote add origin http://root:$INITIAL_GITLAB_PASSWORD@localhost:8080/root/playground.git
+git add .
+git commit -m "initial commit"
+git push -u origin master
+cd ../../scripts
+
+# Start app
+kubectl create namespace dev
+kubectl apply -f ../confs/argocd/application.yaml -n argocd

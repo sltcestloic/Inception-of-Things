@@ -5,9 +5,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/ctaleb/iot-ctaleb.git
+    repoURL: http://gitlab-webservice-default.gitlab.svc.cluster.local:8181/root/playground.git
     targetRevision: HEAD
-    path: dev  # Path in the repo where kube manifests are stored
+    path: dev
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
