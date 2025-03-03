@@ -7,7 +7,7 @@ worker_ip = "192.168.58.111"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "debian/bookworm64"
 
-  config.vm.synced_folder "./shared", shared_folder
+  config.vm.synced_folder "./confs", shared_folder
 
   config.vm.define "ctalebS", primary: true do |server|
     server.vm.hostname = "ctalebS"
@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.memory = 2048
       vb.cpus = 2
     end
-    server.vm.provision "shell", path: "shared/controller.sh", args: [shared_folder, server_ip]
+    server.vm.provision "shell", path: "scripts/controller.sh", args: [shared_folder, server_ip]
   end
 
   config.vm.define "ctalebSW" do |worker|
@@ -29,6 +29,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.memory = 1024
       vb.cpus = 1
     end
-    worker.vm.provision "shell", path: "shared/agent.sh", args: [shared_folder, server_ip]
+    worker.vm.provision "shell", path: "scripts/agent.sh", args: [shared_folder, server_ip]
   end
 end

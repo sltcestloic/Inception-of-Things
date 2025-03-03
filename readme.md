@@ -110,3 +110,19 @@ curl -sSL -o argocd-linux-$(dpkg --print-architecture) https://github.com/argopr
 sudo install -m 555 argocd-linux-$(dpkg --print-architecture) /usr/local/bin/argocd
 rm argocd-linux-$(dpkg --print-architecture)
 ```
+
+# Installation de [Helm](https://helm.sh/docs/intro/install/)
+
+```sh
+curl https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz -o helm.tar.gz
+tar -xf helm.tar.gz 
+mv linux-amd64/helm /usr/local/bin/
+```
+
+## Installation de gitlab via Helm
+
+```
+helm repo add gitlab https://charts.gitlab.io/
+helm repo update
+helm upgrade --install gitlab gitlab/gitlab   --namespace gitlab   --timeout 600s   --set global.hosts.domain=localhost   --set global.hosts.externalIP=127.0.0.1   --set certmanager-issuer.email=lbertran@student.42lyon.fr
+```
