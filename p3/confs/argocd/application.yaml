@@ -7,7 +7,7 @@ spec:
   source:
     repoURL: https://github.com/ctaleb/iot-ctaleb.git
     targetRevision: HEAD
-    path: dev  # Path in the repo where kube manifests are stored
+    path: dev
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
