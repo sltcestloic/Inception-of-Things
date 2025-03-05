@@ -15,9 +15,12 @@ helm upgrade --install gitlab gitlab/gitlab \
     --set certmanager-issuer.email=lbertran@student.42lyon.fr \
     --set global.hosts.externalIP="127.0.0.1" \
     --set global.hosts.https=false
+echo "Waiting for gitlab to be deployed..."
 kubectl wait --for=condition=available --timeout=500s deployment -n gitlab --all
+echo "Saving initial gitlab password..."
 INITIAL_GITLAB_PASSWORD=$(kubectl get secret -n gitlab gitlab-gitlab-initial-root-password -o jsonpath="{.data.password}" | base64 -d)
 echo "$INITIAL_GITLAB_PASSWORD" > ~/tmp
+echo "Initial gitlab password saved in ~/tmp"
 
 
 # Install and configure argocd
@@ -27,6 +30,7 @@ helm repo update
 helm install argocd argo/argo-cd \
     --timeout 300s \
     --namespace argocd
+echo "Waiting for argocd to be deployed..."
 kubectl wait --for=condition=available --timeout=300s deployment -n argocd argocd-server
 kubectl patch svc argocd-server -n argocd -p '{
   "spec": {
