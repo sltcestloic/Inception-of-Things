@@ -27,12 +27,12 @@ kubectl patch svc argocd-server -n argocd -p '{
 
 # Login to argocd
 SERVER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' k3d-argocluster-server-0)
-SERVER_PORT=$(kubectl get svc argocd-server -n argocd -o jsonpath="{.spec.ports[?(@.port==443)].nodePort}")
-echo "Admin dashboard $SERVER_IP:$SERVER_PORT"
+echo "Admin dashboard $SERVER_IP:31888"
 echo "Playground-app $SERVER_IP:30888"
 echo "Waiting for argocd-server to be deployed..."
 kubectl wait --for=condition=available --timeout=300s deployment -n argocd argocd-server
 INITIAL_ARGOCD_PASSWORD=$(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+argocd login $SERVER_IP:31888 --username admin --password $INITIAL_ARGOCD_PASSWORD --insecure
 argocd account update-password --current-password $INITIAL_ARGOCD_PASSWORD --new-password $ARGO_ADMIN_PASSWORD
 
 # Apply app configuration
