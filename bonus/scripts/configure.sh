@@ -70,8 +70,12 @@ curl --request POST "http://localhost:8080/api/v4/projects" \
      --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
      --data "name=playground&visibility=public"
 cd ../confs/playground
+rm -rf .git
+git config --global user.email "lbertran@student.42lyon.fr"
+git config --global user.name "root"
 git init
-git remote add origin http://root:$INITIAL_GITLAB_PASSWORD@localhost:8080/root/playground.git
+GITLAB_PASSWORD=$(cat ~/tmp)
+git remote add origin http://root:$GITLAB_PASSWORD@localhost:8080/root/playground.git
 git add .
 git commit -m "initial commit"
 git push -u origin master
