@@ -105,7 +105,11 @@ wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
 # Installation de [ArgoCD cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/)
 
-```sh
+```sh```sh
+curl -sSL -o argocd-linux-$(dpkg --print-architecture) https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-$(dpkg --print-architecture)
+sudo install -m 555 argocd-linux-$(dpkg --print-architecture) /usr/local/bin/argocd
+rm argocd-linux-$(dpkg --print-architecture)
+```
 curl -sSL -o argocd-linux-$(dpkg --print-architecture) https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-$(dpkg --print-architecture)
 sudo install -m 555 argocd-linux-$(dpkg --print-architecture) /usr/local/bin/argocd
 rm argocd-linux-$(dpkg --print-architecture)
@@ -117,12 +121,4 @@ rm argocd-linux-$(dpkg --print-architecture)
 curl https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz -o helm.tar.gz
 tar -xf helm.tar.gz 
 mv linux-amd64/helm /usr/local/bin/
-```
-
-## Installation de gitlab via Helm
-
-```
-helm repo add gitlab https://charts.gitlab.io/
-helm repo update
-helm upgrade --install gitlab gitlab/gitlab   --namespace gitlab   --timeout 600s   --set global.hosts.domain=localhost   --set global.hosts.externalIP=127.0.0.1   --set certmanager-issuer.email=lbertran@student.42lyon.fr
 ```
